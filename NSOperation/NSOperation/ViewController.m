@@ -134,11 +134,31 @@
         }];
     }];
 }
+//----------------------最大并发数-----------------------------------------------
+-(void)dome07{
+
+    /**
+     从ios8开始，无论是GCD或者nsoperation都会开启很多线程
+     */
+    //并发操作数量,控制线程数量，------------》线程回收
+    //WiFi 5~6
+    //3G 2~3
+    self.queue.maxConcurrentOperationCount = 2;
+    
+    for (int i = 0;  i<20; i++) {
+        [self.queue addOperationWithBlock:^{
+            
+            [NSThread sleepForTimeInterval:1.0];
+            NSLog(@"线程----%@----》%d",[NSThread currentThread],i);
+            
+        }];
+    }
+}
 
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
 
-    [self dome06];
+    [self dome07];
 }
 
 
