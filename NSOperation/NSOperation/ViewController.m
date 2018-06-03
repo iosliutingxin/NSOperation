@@ -158,7 +158,7 @@
 -(void)dome08{
     //挂起是把队列挂起，当前正在执行的任务不会停止
     if (_queue.isSuspended) {
-        NSLog(@"继续");
+        NSLog(@"继续 操作数----》%lu",(unsigned long)self.queue.operationCount);
         _queue.suspended = NO;
         
     }else{
@@ -166,11 +166,49 @@
         _queue.suspended = YES;
     }
 }
+//取消所有操作数
+-(void)dome09{
+
+    [self.queue cancelAllOperations];
+
+}
+//----------------------依赖关系----------------------------------------------
+-(void)dome10{
+    /**
+     下载、解压、通知用户
+     */
+    //1、下载
+    NSBlockOperation *op1 = [NSBlockOperation blockOperationWithBlock:^{
+        [NSThread sleepForTimeInterval:6.0];
+
+        NSLog(@"下载---%@",[NSThread currentThread]);
+    }];
+    //2、解压
+    NSBlockOperation *op2 = [NSBlockOperation blockOperationWithBlock:^{
+        [NSThread sleepForTimeInterval:4.0];
+        NSLog(@"解压---%@",[NSThread currentThread]);
+    }];
+    //3、通知用户
+    NSBlockOperation *op3 = [NSBlockOperation blockOperationWithBlock:^{
+        NSLog(@"通知用户---%@",[NSThread currentThread]);
+    }];
+    
+    //nsopetation 提供依赖关系
+    [op2 addDependency:op1];
+    [op3 addDependency:op2];
+    
+    //添加到队列
+    [self.queue addOperations:@[op1,op2,op3] waitUntilFinished:YES];
+    //waitUntilFinished会卡住当前线程
+    NSLog(@"come here---线程 %@",[NSThread currentThread]);
+    
+
+}
 
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
 
-    [self dome07];
+    [self dome10];
 }
 
 
