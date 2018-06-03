@@ -154,6 +154,18 @@
         }];
     }
 }
+//----------------------暂停、继续----------------------------------------------
+-(void)dome08{
+    //挂起是把队列挂起，当前正在执行的任务不会停止
+    if (_queue.isSuspended) {
+        NSLog(@"继续");
+        _queue.suspended = NO;
+        
+    }else{
+        NSLog(@"暂停");
+        _queue.suspended = YES;
+    }
+}
 
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
